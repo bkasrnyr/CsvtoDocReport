@@ -58,10 +58,10 @@ def print_logo():
   ██     ██   ██   ██ ██ ██   ██ ██ ██    ██    ██  ██      ██      ██    ██  ██      ██  
    ███████ ██  ██████ ██  █████  ██  ██   ██     ██  ██████ ██       ██████  ███      █████
 
-                                    \033[34m[✔] https://github.com/bkasrnyr/QuickReport [✔]
-                                    \033[34m[✔]            Version 1.0                  [✔]
-                                    \033[34m[✔]       Author:Bikash Rouniyar            [✔]
-                                    \033[91m[X] Please Don't Use For illegal Activity   [X]
+                                    \033[34m[✔] https://github.com/bkasrnyr/CsvtoDocReport  [✔]
+                                    \033[34m[✔]            Version 1.0                      [✔]
+                                    \033[34m[✔]       Author:Bikash Rouniyar                [✔]
+                                    \033[91m[X] Please Don't Use For illegal Activity       [X]
  """
     print(logo + '\n')    
 
@@ -113,147 +113,152 @@ def write_csv_data_to_docx(df, docx_filename):
     m = 0
     p = 0
     progress_bar = tqdm(total=len(lol),bar_format="{l_bar}{bar}| \033[0;35m{n_fmt}/{total_fmt}\033[0m",ncols=80)
-    for x in lol:
-        progress_bar.set_description("\033[92m[+] Progress:\033[0m")
-        p += 1
-        for y in x:
-            uef.append(y)
-            break
-    # *************************************************************************
-    def make_rows_bold(*rows):
-        for row in rows:
-            for cell in row.cells:
-                for paragraph in cell.paragraphs:
-                    for run in paragraph.runs:
-                        run.font.bold = True
+    try:
+        for x in lol:
+            progress_bar.set_description("\033[92m[+] Progress:\033[0m")
+            p += 1
+            for y in x:
+                uef.append(y)
+                break
+        # *************************************************************************
+        def make_rows_bold(*rows):
+            for row in rows:
+                for cell in row.cells:
+                    for paragraph in cell.paragraphs:
+                        for run in paragraph.runs:
+                            run.font.bold = True
 
-    def remove_row(table, row):
-        tbl = summarytable._tbl
-        tr = row._tr
-        tbl.remove(tr)
-    # print '******************************************************************'
+        def remove_row(table, row):
+            tbl = summarytable._tbl
+            tr = row._tr
+            tbl.remove(tr)
+        # print '******************************************************************'
 
-    summarytable = document.add_table(rows=2 + len(lol), cols=7)
-    summarytable.style = 'TableGrid'
-    column_widths = [0.3, 1.248031, 1.740157, 0.6929134, 0.5590551, 0.9409449, 1.748031]
+        summarytable = document.add_table(rows=2 + len(lol), cols=7)
+        summarytable.style = 'TableGrid'
+        column_widths = [0.3, 1.248031, 1.740157, 0.6929134, 0.5590551, 0.9409449, 1.748031]
 
-    for col, width in enumerate(column_widths):
-        summarytable.cell(0, col).width = Inches(width)
-        summarytable.cell(1, col).width = Inches(width)
+        for col, width in enumerate(column_widths):
+            summarytable.cell(0, col).width = Inches(width)
+            summarytable.cell(1, col).width = Inches(width)
 
-    header_texts = ['S. No.', 'Component', 'Vulnerabilities Noted per Component',
-                    'Severity Level', 'CVSS Level', 'Compliance Status',
-                    'Exceptions, False Positives, or Compensating Controls (Noted by the ASV for this Vulnerability)']
+        header_texts = ['S. No.', 'Component', 'Vulnerabilities Noted per Component',
+                        'Severity Level', 'CVSS Level', 'Compliance Status',
+                        'Exceptions, False Positives, or Compensating Controls (Noted by the ASV for this Vulnerability)']
 
-    for col, header_text in enumerate(header_texts):
-        summarytable.cell(1, col).text = header_text
+        for col, header_text in enumerate(header_texts):
+            summarytable.cell(1, col).text = header_text
 
-    shading_elm = parse_xml(r'<w:shd {} w:fill="#D9D9D9"/>'.format(nsdecls('w')))
-    summarytable.cell(1,0)._tc.get_or_add_tcPr().append(shading_elm)
-    shading_elm = parse_xml(r'<w:shd {} w:fill="#D9D9D9"/>'.format(nsdecls('w')))
-    summarytable.cell(1,1)._tc.get_or_add_tcPr().append(shading_elm)
-    shading_elm = parse_xml(r'<w:shd {} w:fill="#D9D9D9"/>'.format(nsdecls('w')))
-    summarytable.cell(1,2)._tc.get_or_add_tcPr().append(shading_elm)
-    shading_elm = parse_xml(r'<w:shd {} w:fill="#D9D9D9"/>'.format(nsdecls('w')))
-    summarytable.cell(1,3)._tc.get_or_add_tcPr().append(shading_elm)
-    shading_elm = parse_xml(r'<w:shd {} w:fill="#D9D9D9"/>'.format(nsdecls('w')))
-    summarytable.cell(1,4)._tc.get_or_add_tcPr().append(shading_elm)
-    shading_elm = parse_xml(r'<w:shd {} w:fill="#D9D9D9"/>'.format(nsdecls('w')))
-    summarytable.cell(1,5)._tc.get_or_add_tcPr().append(shading_elm)
-    shading_elm = parse_xml(r'<w:shd {} w:fill="#D9D9D9"/>'.format(nsdecls('w')))
-    summarytable.cell(1,6)._tc.get_or_add_tcPr().append(shading_elm)
-    a = summarytable.cell(0, 0)
-    b = summarytable.cell(0, 1)
-    c = summarytable.cell(0, 2)
-    d = summarytable.cell(0, 3)
-    e = summarytable.cell(0, 4)
-    f = summarytable.cell(0, 5)
-    g = summarytable.cell(0, 6)
-    G = a.merge(b)
-    H = c.merge(d)
-    I = e.merge(f)
-    J = G.merge(H)
-    K = I.merge(J)
-    L = K.merge(g)
-    shading_elm2 = parse_xml(r'<w:shd {} w:fill="#595959"/>'.format(nsdecls('w')))
-    L.text = ''
-    run = L.paragraphs[0].add_run('Part 3a. Vulnerabilities Noted for each Component')
-    font = run.font
-    # c = Color("blue")
-    font.color.rgb = RGBColor(255, 255, 255)
-    L._tc.get_or_add_tcPr().append(shading_elm2)
-    make_rows_bold(summarytable.rows[1])
-    document.add_page_break()
-
-    table = ['x'] * (uef[-1] + 1)
-
-    # print uef
-    string_host = [[]] * len(uef)
-
-    strg = ''
-    p = 0
-    for y in lol:
-
-        for z in y:
-            string_host[p] = string_host[p] + [(str(
-                dfn['IP'][z] + ' ' + str('Port') + ' ' + str(dfn['Port'][z]) + '' + str('/') + '' + str(
-                    dfn['Protocol'][z])))]
-        p = p + 1
-    q = 0
-    g = 0
-    counting = 2
-    strg = [[]]
-    for x in string_host:
-        strg.append([list(set(x))])
-    t = 1
-    pp = 0
-    for x in uef:
-
-        c = 0
-        strgf = ''.join(str(e) for e in strg[t])
-        # ttrgf=''.join(str(e) for e in ttrg[t])
-
-        # if df1['Risk'][x] != "None":
-        table[x] = document.add_table(rows=16, cols=2)
-        table[x].style = 'TableGrid'
-        table[x].autofit = False
-        column_width = Inches(1.57)
-
-        for i in range(16):
-            table[x].cell(i, 0).width = column_width
-
-        table[x].cell(0, 0).text = str(pp + 1)
-        table[x].cell(0, 1).text = str(dfn['Title'][x])
-        table[x].cell(1, 0).text = 'PCI Compliance'
-        table[x].cell(2, 0).text = 'PCI Severity'
-        table[x].cell(3, 0).text = 'CVSS Base Score'
-        table[x].cell(4, 0).text = 'Affected Instances'
-        table[x].cell(5, 0).text = 'FQDN/Host Name'
-        table[x].cell(6, 0).text = 'Vulnerability Type'
-        table[x].cell(7, 0).text = 'Operating System'
-        table[x].cell(8, 0).text = 'Category'
-        table[x].cell(9, 0).text = 'CVE ID'
-        table[x].cell(10, 0).text = 'Vendor Reference'
-        table[x].cell(11, 0).text = 'Threat'
-        table[x].cell(12, 0).text = 'Impact'
-        table[x].cell(13, 0).text = 'Solution'
-        table[x].cell(14, 0).text = 'Result'
-        table[x].cell(15, 0).text = ''
-        cell_width = Inches(5.751969)
-
-        for i in range(16):
-            table[x].cell(i, 1).width = cell_width
-
-        row = table[x].rows
-        row.height = Inches(0.1220472)
-        A = table[x].cell(15, 0).merge(table[x].cell(15, 1))
         shading_elm = parse_xml(r'<w:shd {} w:fill="#D9D9D9"/>'.format(nsdecls('w')))
-        A._element.get_or_add_tcPr().append(shading_elm)
-        make_rows_bold(table[x].rows[0], table[x].rows[1], table[x].rows[2], table[x].rows[3], table[x].rows[4],
-                       table[x].rows[5], table[x].rows[6], table[x].rows[7], table[x].rows[8], table[x].rows[9],
-                       table[x].rows[10], table[x].rows[11], table[x].rows[12], table[x].rows[13], table[x].rows[14])
+        summarytable.cell(1,0)._tc.get_or_add_tcPr().append(shading_elm)
+        shading_elm = parse_xml(r'<w:shd {} w:fill="#D9D9D9"/>'.format(nsdecls('w')))
+        summarytable.cell(1,1)._tc.get_or_add_tcPr().append(shading_elm)
+        shading_elm = parse_xml(r'<w:shd {} w:fill="#D9D9D9"/>'.format(nsdecls('w')))
+        summarytable.cell(1,2)._tc.get_or_add_tcPr().append(shading_elm)
+        shading_elm = parse_xml(r'<w:shd {} w:fill="#D9D9D9"/>'.format(nsdecls('w')))
+        summarytable.cell(1,3)._tc.get_or_add_tcPr().append(shading_elm)
+        shading_elm = parse_xml(r'<w:shd {} w:fill="#D9D9D9"/>'.format(nsdecls('w')))
+        summarytable.cell(1,4)._tc.get_or_add_tcPr().append(shading_elm)
+        shading_elm = parse_xml(r'<w:shd {} w:fill="#D9D9D9"/>'.format(nsdecls('w')))
+        summarytable.cell(1,5)._tc.get_or_add_tcPr().append(shading_elm)
+        shading_elm = parse_xml(r'<w:shd {} w:fill="#D9D9D9"/>'.format(nsdecls('w')))
+        summarytable.cell(1,6)._tc.get_or_add_tcPr().append(shading_elm)
+        a = summarytable.cell(0, 0)
+        b = summarytable.cell(0, 1)
+        c = summarytable.cell(0, 2)
+        d = summarytable.cell(0, 3)
+        e = summarytable.cell(0, 4)
+        f = summarytable.cell(0, 5)
+        g = summarytable.cell(0, 6)
+        G = a.merge(b)
+        H = c.merge(d)
+        I = e.merge(f)
+        J = G.merge(H)
+        K = I.merge(J)
+        L = K.merge(g)
+        shading_elm2 = parse_xml(r'<w:shd {} w:fill="#595959"/>'.format(nsdecls('w')))
+        L.text = ''
+        run = L.paragraphs[0].add_run('Part 3a. Vulnerabilities Noted for each Component')
+        font = run.font
+        # c = Color("blue")
+        font.color.rgb = RGBColor(255, 255, 255)
+        L._tc.get_or_add_tcPr().append(shading_elm2)
+        make_rows_bold(summarytable.rows[1])
         document.add_page_break()
-        progress_bar.update(1)
+
+        table = ['x'] * (uef[-1] + 1)
+
+        # print uef
+        string_host = [[]] * len(uef)
+
+        strg = ''
+        p = 0
+        for y in lol:
+
+            for z in y:
+                string_host[p] = string_host[p] + [(str(
+                    dfn['IP'][z] + ' ' + str('Port') + ' ' + str(dfn['Port'][z]) + '' + str('/') + '' + str(
+                        dfn['Protocol'][z])))]
+            p = p + 1
+        q = 0
+        g = 0
+        counting = 2
+        strg = [[]]
+        for x in string_host:
+            strg.append([list(set(x))])
+        t = 1
+        pp = 0
+        for x in uef:
+
+            c = 0
+            strgf = ''.join(str(e) for e in strg[t])
+            # ttrgf=''.join(str(e) for e in ttrg[t])
+
+            # if df1['Risk'][x] != "None":
+            table[x] = document.add_table(rows=16, cols=2)
+            table[x].style = 'TableGrid'
+            table[x].autofit = False
+            column_width = Inches(1.57)
+
+            for i in range(16):
+                table[x].cell(i, 0).width = column_width
+
+            table[x].cell(0, 0).text = str(pp + 1)
+            table[x].cell(0, 1).text = str(dfn['Title'][x])
+            table[x].cell(1, 0).text = 'PCI Compliance'
+            table[x].cell(2, 0).text = 'PCI Severity'
+            table[x].cell(3, 0).text = 'CVSS Base Score'
+            table[x].cell(4, 0).text = 'Affected Instances'
+            table[x].cell(5, 0).text = 'FQDN/Host Name'
+            table[x].cell(6, 0).text = 'Vulnerability Type'
+            table[x].cell(7, 0).text = 'Operating System'
+            table[x].cell(8, 0).text = 'Category'
+            table[x].cell(9, 0).text = 'CVE ID'
+            table[x].cell(10, 0).text = 'Vendor Reference'
+            table[x].cell(11, 0).text = 'Threat'
+            table[x].cell(12, 0).text = 'Impact'
+            table[x].cell(13, 0).text = 'Solution'
+            table[x].cell(14, 0).text = 'Result'
+            table[x].cell(15, 0).text = ''
+            cell_width = Inches(5.751969)
+
+            for i in range(16):
+                table[x].cell(i, 1).width = cell_width
+
+            row = table[x].rows
+            row.height = Inches(0.1220472)
+            A = table[x].cell(15, 0).merge(table[x].cell(15, 1))
+            shading_elm = parse_xml(r'<w:shd {} w:fill="#D9D9D9"/>'.format(nsdecls('w')))
+            A._element.get_or_add_tcPr().append(shading_elm)
+            make_rows_bold(table[x].rows[0], table[x].rows[1], table[x].rows[2], table[x].rows[3], table[x].rows[4],
+                           table[x].rows[5], table[x].rows[6], table[x].rows[7], table[x].rows[8], table[x].rows[9],
+                           table[x].rows[10], table[x].rows[11], table[x].rows[12], table[x].rows[13], table[x].rows[14])
+            document.add_page_break()
+            progress_bar.update(1)
+    except KeyboardInterrupt:
+        progress_bar.close()
+        print(Fore.RED + "\n[-] Program interrupted by the user. Exiting..." + Style.RESET_ALL)
+        sys.exit(1)    
         if str(float(dfn['CVSS'][x])) != str('-1.0'):
             summarytable.cell(m + 2, 0).text = str(m + 1)
             summarytable.cell(m + 2, 1).text = strgf.replace("[", "").replace("]", "").replace("'", "").replace("Port -/-", "").replace(".0/tcp", "/tcp").replace(".0/udp", "/udp")
@@ -360,21 +365,22 @@ def main():
         if not os.path.exists(filename):
                 raise FileNotFoundError(f"{filename} file not found, please keep the CSV file in current directory")
     except Exception as e:
-        print(Fore.RED + "[-]", str(e) + Style.RESET_ALL)         
-        print(Fore.GREEN + f"[+] CSV File: {filename} Loaded Successfully" + Style.RESET_ALL)
-        print(Fore.GREEN + "[+] Converting CSV To XLSX" + Style.RESET_ALL)
-        xlsx_file = merge_csv_to_xlsx(filename)
-        print(Fore.GREEN + "[+] Conversion Completed. XLSX File Created: " + xlsx_file + Style.RESET_ALL)
-        print(Fore.GREEN + "[+] Processing Data" + Style.RESET_ALL)
-        df = process_data(xlsx_file)
-        print(Fore.GREEN + "[+] Data Processing Completed" + Style.RESET_ALL)
-        print(Fore.GREEN + "[+] Creating DOCX File" + Style.RESET_ALL)
-        docx_file = create_docx_file(filename)
-        print(Fore.GREEN + "[+] DOCX File Created: " + docx_file + Style.RESET_ALL)
-        print(Fore.GREEN + "[+] Writing CSV Data To DOCX" + Style.RESET_ALL)
-        write_csv_data_to_docx(df, docx_file)
-        print(Fore.GREEN + "[+] Writing CSV Data To DOCX Completed" + Style.RESET_ALL)
-        print(Fore.GREEN + "[+] Process Completed Successfully" + Style.RESET_ALL)   
+        print(Fore.RED + "[-]", str(e) + Style.RESET_ALL)
+        exit()         
+    print(Fore.GREEN + f"[+] CSV File: {filename} Loaded Successfully" + Style.RESET_ALL)
+    print(Fore.GREEN + "[+] Converting CSV To XLSX" + Style.RESET_ALL)
+    xlsx_file = merge_csv_to_xlsx(filename)
+    print(Fore.GREEN + "[+] Conversion Completed. XLSX File Created: " + xlsx_file + Style.RESET_ALL)
+    print(Fore.GREEN + "[+] Processing Data" + Style.RESET_ALL)
+    df = process_data(xlsx_file)
+    print(Fore.GREEN + "[+] Data Processing Completed" + Style.RESET_ALL)
+    print(Fore.GREEN + "[+] Creating DOCX File" + Style.RESET_ALL)
+    docx_file = create_docx_file(filename)
+    print(Fore.GREEN + "[+] DOCX File Created: " + docx_file + Style.RESET_ALL)
+    print(Fore.GREEN + "[+] Writing CSV Data To DOCX" + Style.RESET_ALL)
+    write_csv_data_to_docx(df, docx_file)
+    print(Fore.GREEN + "[+] Writing CSV Data To DOCX Completed" + Style.RESET_ALL)
+    print(Fore.GREEN + "[+] Process Completed Successfully" + Style.RESET_ALL)   
        
 if __name__ == "__main__":
     warnings.filterwarnings("ignore")
